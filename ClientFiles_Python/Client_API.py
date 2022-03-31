@@ -8,9 +8,9 @@ from .ReturnCodes import FLR_RESULT,SendToCameraList
 
 
 try:
-    from ..FSLP_Files.UART_HalfDuplex import UART, PyUART
+    from FSLP_Files.UART_HalfDuplex import UART, PyUART
 except ImportError:
-    from ..FSLP_Files.UART_HalfDuplex import UART
+    from FSLP_Files.UART_HalfDuplex import UART
 
 def Initialize(manualport=None,manualbaud=None,useDll=True, **kwargs):
     if useDll:
