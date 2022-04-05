@@ -1,6 +1,6 @@
 import cv2
 
-cap = cv2.VideoCapture(0, cv2.CAP_)
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_FPS, 30)
 while(cap.isOpened()):
     ret, frame = cap.read()

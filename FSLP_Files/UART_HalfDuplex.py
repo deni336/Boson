@@ -202,7 +202,7 @@ class UART():
         self.port_close(ctypes.c_int32(self.port_num))
 
 
-import serial, time
+import serial,time
 #import pdb
 
 def debugprint(*args,**kwargs):

@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from unittest import TextTestResult
 import cv2, sys
 import GUI as G
 
@@ -15,31 +16,34 @@ colorMapDict = {"AUTUMN": cv2.COLORMAP_AUTUMN, "BONE": cv2.COLORMAP_BONE,
                 "SUMMER": cv2.COLORMAP_SUMMER, "TURBO": cv2.COLORMAP_TURBO,
                 "TWILIGHT": cv2.COLORMAP_TWILIGHT, "TWILIGHT SHIFTED": cv2.COLORMAP_TWILIGHT_SHIFTED,
                 "VIRIDIS": cv2.COLORMAP_VIRIDIS, "WINTER": cv2.COLORMAP_WINTER}
-
+currentColorPalette = 14
+clicked = "INFERNO"
 
 class BosonFront(G.GUI):
 
     def __init__(self, parent, controller):
 
         G.GUI.__init__(self, parent)
-        
-        frame1 = LabelFrame(self.mainFrame, G.frameStyles, text="Utilities")
-        frame1.pack(fill="both", expand=True)
 
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=3, column=0, pady=2, padx=5)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=4, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=5, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=6, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=7, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=8, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=9, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=10, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=11, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=12, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=13, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=14, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=15, column=0, pady=2)
-        btn1 = ttk.Button(frame1, text="btn1", command=lambda: sys.exit()).grid(row=16, column=0, pady=2)
+        utilFrame = LabelFrame(self.mainFrame, G.frameStyles, text="Utilities")
+        utilFrame.pack(side="left", fill="y")
+
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=3, column=0, pady=2, padx=5)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=4, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=5, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=6, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=7, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=8, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=9, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=10, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=11, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=12, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=13, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=14, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=15, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=16, column=0, pady=2)
+
+        cameraFrame = LabelFrame(self.mainFrame, G.frameStyles, text="Camera Output",).pack(side="right", fill="x")
 
         colorMapList = ["AUTUMN", "BONE", "CIVIDIS", "COOL", "DEEPGREEN",
                         "HOT", "HSV", "INFERNO", "JET", "MAGMA", "OCEAN", 
@@ -48,20 +52,19 @@ class BosonFront(G.GUI):
                         "VIRIDIS", "WINTER"]
 
         clicked = StringVar()
-        clicked.set("INFERNO")
-        drop = OptionMenu(frame1 , clicked , *colorMapList)
+        clicked.set("")
+        drop = OptionMenu(utilFrame , clicked , *colorMapList)
         drop.grid(row=0, column=0, pady=2, padx=5)
-        button = Button(frame1 , text = "Submit" , command=lambda: showColorPaletteLabel).grid(row=1, column=0, pady=2, padx=5)
-        label = Label(frame1 , text = "INFERNO")
+        button = Button(utilFrame, text="Submit", command=lambda: showColorPaletteLabel()).grid(row=1, column=0, pady=2, padx=5)
+        label = Label(utilFrame, text="Palette")
         label.grid(row=2, column=0, pady=2, padx=5) 
+        global currentColorPalette
+        currentColorPalette = clicked.get()
+
         def showColorPaletteLabel():
-            label.config(text = clicked.get()) 
-    
-    def setColorPalette(palette):
-        colorPalette = {}
-        return
+            label.config(text=clicked.get())
+            
 
-          
-
-        
-
+    def setColorPalette():
+        colorMapNumber = colorMapDict.get(currentColorPalette)
+        return colorMapNumber
