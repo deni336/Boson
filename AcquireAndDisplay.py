@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import sys
 import keyboard
 import time
+from ClientFiles_Python import EnumTypes
+from ClientFiles_Python import Client_API
 
 global continue_recording
 continue_recording = True
@@ -229,7 +231,7 @@ def main():
     :rtype: bool
     """
     result = True
-
+    
     # Retrieve singleton reference to system object
     system = PySpin.System.GetInstance()
 
@@ -272,7 +274,7 @@ def main():
     del cam
 
     # Clear camera list before releasing system
-    cam_list.Clear()
+    cam_list.Clear() 
 
     # Release system instance
     system.ReleaseInstance()

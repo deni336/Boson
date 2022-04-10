@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from unittest import TextTestResult
+from PIL import ImageTk, Image
 import cv2, sys
 import GUI as G
 
@@ -26,7 +26,7 @@ class BosonFront(G.GUI):
         G.GUI.__init__(self, parent)
 
         utilFrame = LabelFrame(self.mainFrame, G.frameStyles, text="Utilities")
-        utilFrame.pack(side="left", fill="y")
+        utilFrame.grid(row=0, column=0, rowspan=100, sticky="n")
 
         btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=3, column=0, pady=2, padx=5)
         btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=4, column=0, pady=2)
@@ -43,7 +43,23 @@ class BosonFront(G.GUI):
         btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=15, column=0, pady=2)
         btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=16, column=0, pady=2)
 
-        cameraFrame = LabelFrame(self.mainFrame, G.frameStyles, text="Camera Output",).pack(side="right", fill="x")
+        cameraFrame = Frame(self.mainFrame, bg= "#4b4b4b").grid(row=0, column=1)
+        lmain = Label(cameraFrame, bg= "#4b4b4b")
+        lmain.grid(row=0, column=1)
+
+        cap = cv2.VideoCapture(0)
+
+        def videoStream():
+            _, frame = cap.read()
+            #frames = cv2.applyColorMap(frame, colormap=cv2.COLORMAP_COOL)
+            cv2Image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+            cv2ImageResize = cv2.resize(cv2Image, (1680, 1005))
+            img = Image.fromarray(cv2ImageResize)
+            imgtk = ImageTk.PhotoImage(image=img)
+            lmain.imgtk = imgtk
+            lmain.configure(image=imgtk)
+            lmain.after(1, videoStream)
+        videoStream()
 
         colorMapList = ["AUTUMN", "BONE", "CIVIDIS", "COOL", "DEEPGREEN",
                         "HOT", "HSV", "INFERNO", "JET", "MAGMA", "OCEAN", 
@@ -56,14 +72,14 @@ class BosonFront(G.GUI):
         drop = OptionMenu(utilFrame , clicked , *colorMapList)
         drop.grid(row=0, column=0, pady=2, padx=5)
         button = Button(utilFrame, text="Submit", command=lambda: showColorPaletteLabel()).grid(row=1, column=0, pady=2, padx=5)
-        label = Label(utilFrame, text="Palette")
+        label = Label(utilFrame, bg= "#4b4b4b", text="Palette")
         label.grid(row=2, column=0, pady=2, padx=5) 
         global currentColorPalette
         currentColorPalette = clicked.get()
 
         def showColorPaletteLabel():
             label.config(text=clicked.get())
-            
+
 
     def setColorPalette():
         colorMapNumber = colorMapDict.get(currentColorPalette)

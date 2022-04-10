@@ -1,9 +1,6 @@
 import tkinter as tk
 import SettingsPage as SP
 import BosonFront as BF
-#import CameraStream as CS
-import threading
-
 
 class MyApp(tk.Tk):
 
@@ -11,11 +8,11 @@ class MyApp(tk.Tk):
 
         tk.Tk.__init__(self, *args, **kwargs)
         mainFrame = tk.Frame(self, bg="#4b4b4b")
-        mainFrame.pack_propagate(0)
-        mainFrame.pack(fill="both", expand=True)
+        #mainFrame.pack_propagate(0)
+        mainFrame.grid(sticky="n")
         mainFrame.grid_rowconfigure(0, weight=1)
         mainFrame.grid_columnconfigure(0, weight=1)
-        self.geometry('90x1080+0+0')
+        #self.geometry('1920x1080+0+0')
         self.state("zoomed")
         self.frames = {}
         pages = (BF.BosonFront, SP.SettingsPage)
@@ -23,8 +20,8 @@ class MyApp(tk.Tk):
             frame = F(mainFrame, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-        self.showFrame(BF.BosonFront)
-        self.attributes('-topmost', True)
+        self.showFrame(BF.BosonFront) 
+        #self.attributes('-topmost', True)
         menuBar = MenuBar(self)
         tk.Tk.config(self, menu=menuBar)
 
@@ -35,9 +32,6 @@ class MyApp(tk.Tk):
     def quitApplication(self):
         self.destroy()
 
-    # thread1 = threading.Thread(group=None, target=CS.startStream, name="Camera Viewer")
-    # thread1.start()
-    
 
 class MenuBar(tk.Menu):
     def __init__(self, parent):
