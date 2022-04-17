@@ -3,7 +3,6 @@ from ClientFiles_Python import Client_API, EnumTypes
 from ClientFiles_Python.ReturnCodes import FLR_RESULT
 from FSLP_Files import UART_HalfDuplex
 
-
 MAX_CHUNK_SIZE = 256
 
 cam = Client_API.Initialize("COM3")

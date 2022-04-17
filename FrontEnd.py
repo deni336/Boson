@@ -1,8 +1,11 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, BitmapImage
 from PIL import ImageTk, Image
+import os, threading
 import cv2, sys
 import GUI as G
+from flirpy.camera.boson import Boson
+import CameraEngine as CE
 
 #Globals
 colorMapDict = {"AUTUMN": cv2.COLORMAP_AUTUMN, "BONE": cv2.COLORMAP_BONE,
@@ -25,13 +28,19 @@ class BosonFront(G.GUI):
 
         G.GUI.__init__(self, parent)
 
-        utilFrame = LabelFrame(self.mainFrame, G.frameStyles, text="Utilities")
-        utilFrame.grid(row=0, column=0, rowspan=100, sticky="n")
+        masterFrame = Frame(self.mainFrame, bg= "#4b4b4b")
+        masterFrame.grid()
 
-        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=3, column=0, pady=2, padx=5)
-        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=4, column=0, pady=2)
-        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=5, column=0, pady=2)
-        btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=6, column=0, pady=2)
+        utilFrame = LabelFrame(masterFrame, G.frameStyles, text="Utilities")
+        utilFrame.grid(row=0, column=0, sticky="nw")
+
+        tempDisplayFrame = LabelFrame(masterFrame, G.frameStyles, text="Temp")
+        tempDisplayFrame.grid(row=1, column=0)
+
+        btn1 = ttk.Button(utilFrame, text="Snapshot", command=lambda: snapShot()).grid(row=3, column=0, pady=2, padx=5)
+        btn1 = ttk.Button(utilFrame, text="Start Rec", command=lambda: startScreenRecord()).grid(row=4, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="Stop Rec", command=lambda: stopScreenRecord()).grid(row=5, column=0, pady=2)
+        btn1 = ttk.Button(utilFrame, text="FFC", command=lambda: forceFFC()).grid(row=6, column=0, pady=2)
         btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=7, column=0, pady=2)
         btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=8, column=0, pady=2)
         btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=9, column=0, pady=2)
@@ -43,23 +52,49 @@ class BosonFront(G.GUI):
         btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=15, column=0, pady=2)
         btn1 = ttk.Button(utilFrame, text="btn1", command=lambda: sys.exit()).grid(row=16, column=0, pady=2)
 
-        cameraFrame = Frame(self.mainFrame, bg= "#4b4b4b").grid(row=0, column=1)
+        def forceFFC():
+            cam = Boson()
+            returnCode = cam.do_ffc()
+            if returnCode == None:
+                print("FFC Complete")
+            cam.release()
+
+        def startScreenRecord():
+            pass
+
+        def stopScreenRecord():
+            pass
+
+        def snapShot():
+            conn = CE.CameraConnection.connect()
+            currentFrame = 0
+            try:
+                if not os.path.exists("C:/Users/denis/Pictures/SpiderMonkey"):
+                    os.makedirs("C:/Users/denis/Pictures/SpiderMonkey")
+            except OSError:
+                print('Error: Creating directory of data')
+            
+            _, frame = conn.read()
+            if _:
+                name = './SpiderMonkey/frame' + str(currentFrame) + '.png'
+                print('Creating...', name)
+
+                cv2.imwrite(name, frame)
+                currentFrame += 1
+            else:
+                pass
+
+        cameraFrame = Frame(masterFrame, bg= "#4b4b4b").grid(row=0, rowspan=100, column=1)
         lmain = Label(cameraFrame, bg= "#4b4b4b")
         lmain.grid(row=0, column=1)
 
-        cap = cv2.VideoCapture(0)
-
-        def videoStream():
-            _, frame = cap.read()
-            #frames = cv2.applyColorMap(frame, colormap=cv2.COLORMAP_COOL)
-            cv2Image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-            cv2ImageResize = cv2.resize(cv2Image, (1680, 1005))
-            img = Image.fromarray(cv2ImageResize)
-            imgtk = ImageTk.PhotoImage(image=img)
-            lmain.imgtk = imgtk
-            lmain.configure(image=imgtk)
-            lmain.after(1, videoStream)
-        videoStream()
+        img = Image.fromarray(videoThread.start())
+        imgtk = ImageTk.PhotoImage(image=img)
+        lmain.imgtk = imgtk
+        lmain.configure(image=imgtk)
+        videoThread = threading.Thread(target=CE.CameraStream.videoStream())
+        
+        
 
         colorMapList = ["AUTUMN", "BONE", "CIVIDIS", "COOL", "DEEPGREEN",
                         "HOT", "HSV", "INFERNO", "JET", "MAGMA", "OCEAN", 
@@ -84,3 +119,7 @@ class BosonFront(G.GUI):
     def setColorPalette():
         colorMapNumber = colorMapDict.get(currentColorPalette)
         return colorMapNumber
+
+    def startBitmapOverlay():
+            thermalTempOverlay = BitmapImage(CE.CameraThermalData.callThermalData())
+            print(thermalTempOverlay)

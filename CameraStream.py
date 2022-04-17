@@ -22,7 +22,7 @@ def startStream():
         newFrameTime = time.time()
         fps = 1/(newFrameTime-prevFrameTime)
         prevFrameTime = newFrameTime
-        fps = int(fps)    
+        fps = int(fps)
         fps = str(fps)
         cv2.putText(gray, fps, (1850, 35), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3, cv2.LINE_AA)
         #imgCol = cv2.applyColorMap(gray, colormap=BF.BosonFront.setColorPalette())
