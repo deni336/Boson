@@ -1,6 +1,8 @@
 import tkinter as tk
+import threading
 import SettingsPage as SP
-import FrontEnd as BF
+import FrontEnd as FE
+import CameraEngine as CE
 
 class MyApp(tk.Tk):
 
@@ -15,15 +17,18 @@ class MyApp(tk.Tk):
         #self.geometry('1920x1080+0+0')
         self.state("zoomed")
         self.frames = {}
-        pages = (BF.BosonFront, SP.SettingsPage)
+        pages = (FE.BosonFront, SP.SettingsPage)
         for F in pages:
             frame = F(mainFrame, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-        self.showFrame(BF.BosonFront) 
+        self.showFrame(FE.BosonFront) 
         #self.attributes('-topmost', True)
         menuBar = MenuBar(self)
         tk.Tk.config(self, menu=menuBar)
+
+        # videoThread = threading.Thread(target=CE.CameraStream.videoStream())
+        # videoThread.start()
 
     def showFrame(self, name):
         frame = self.frames[name]
