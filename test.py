@@ -22,6 +22,15 @@
 
 #     print(frame)
 # startCam()
+from ClientFiles_Python import Client_API
+from FSLP_Files.UART_HalfDuplex import PyUART
+
+
+
+cam = PyUART()
+port = cam.OpenPort("CameraSerialConfig.ini", "COM3", 921600)
+tele = cam.ReadFrame(5, 327680)
+print(tele)
     
             
 
@@ -30,11 +39,11 @@
 
 # # print(serial)
 
-from flirpy.camera.boson import Boson
+# from flirpy.camera.boson import Boson
 
-cap = Boson()
+# cap = Boson()
 
-returnCode = cap.get_nuc_desired()
+# returnCode = cap.get_nuc_desired()
 
-cap.do_nuc_table_switch()
-print(returnCode)
+# cap.do_nuc_table_switch()
+# print(returnCode)

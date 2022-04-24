@@ -2,7 +2,6 @@ from tkinter import LabelFrame
 from tkinter import ttk
 import re
 from CameraEngine import CameraOperations
-from FrontEnd import BosonFront
 import GUI as G
 
 class ButtonMaster(G.GUI):
@@ -10,7 +9,7 @@ class ButtonMaster(G.GUI):
 
         G.GUI.__init__(self, parent)
         #Utility frame for buttons
-        utilFrame = LabelFrame(self, G.frameStyles, text="Utilities")
+        utilFrame = LabelFrame(self.masterFrame, G.frameStyles, text="Utilities")
         utilFrame.grid(row=0, column=0, sticky="nw")
         # frame for displaying temp // for later use
         tempDisplayFrame = LabelFrame(self,self, G.frameStyles, text="Temp")

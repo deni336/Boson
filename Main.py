@@ -2,7 +2,8 @@ import tkinter as tk
 import threading
 import SettingsPage as SP
 import FrontEnd as FE
-import CameraEngine as CE
+
+#import CameraEngine as CE
 
 class MyApp(tk.Tk):
 
