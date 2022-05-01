@@ -3,8 +3,6 @@ import threading
 import SettingsPage as SP
 import FrontEnd as FE
 
-#import CameraEngine as CE
-
 class MyApp(tk.Tk):
 
     def __init__(self, *args, **kwargs):

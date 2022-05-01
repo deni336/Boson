@@ -25,12 +25,28 @@
 from ClientFiles_Python import Client_API
 from FSLP_Files.UART_HalfDuplex import PyUART
 
+from flirpy.camera.boson import Boson
+import serial
+
+# cam = PyUART()
+# port = cam.OpenPort("CameraSerialConfig.ini", "COM3", 921600)
+# tele = cam.ReadFrame(5, 1)
+# print(tele)
 
 
-cam = PyUART()
-port = cam.OpenPort("CameraSerialConfig.ini", "COM3", 921600)
-tele = cam.ReadFrame(5, 327680)
-print(tele)
+
+# ser = serial.Serial('COM3', 921600, timeout=0)
+# setting = ser.get_settings()
+# print(setting)
+# while ser.is_open == True:
+#     x = ser.readline(8)
+#     print(x)
+# while True:
+#     data = ''
+#     while ser.inWaiting()>0:
+#         data += ser.read(1)
+#     if data:
+#         print ('Got:', data)
     
             
 
@@ -47,3 +63,24 @@ print(tele)
 
 # cap.do_nuc_table_switch()
 # print(returnCode)
+
+
+inp = '0x00' + ',' + '0x20'
+inputData = bytearray(inp, 'utf-8')
+print(inputData)
+
+
+inp = bytes([0x00, 0x20, 0x00, 0x20])
+print(inp)
+
+
+
+mem = 655360
+inp = []
+count = 0
+while count < mem:
+    inp.append(0)
+    inp.append(32)
+    count+=2
+inputData = bytearray(inp)
+print(inputData, inp)

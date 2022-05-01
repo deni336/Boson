@@ -15,7 +15,7 @@ capSettings.bufferIndex = captureIndex
 returnCode = Client_API.captureFrames(capSettings)
 if returnCode != FLR_RESULT.R_SUCCESS:
     cam.close()
-print(returnCode)
+# print(returnCode)
 
 errorCount = 0
 
@@ -23,7 +23,7 @@ memCapReturn = Client_API.memGetCaptureSize()
 frameSize = memCapReturn[1]
 rows = memCapReturn[2]
 columns = memCapReturn[3]
-print(memCapReturn)
+# print(memCapReturn)
 chunks = (frameSize/MAX_CHUNK_SIZE)+0.5
 offset=0
 n = (offset<frameSize)
@@ -36,7 +36,7 @@ for n in range(0, m):
         sizeInBytes = frameSize - offset
 
     memReadReturn = Client_API.memReadCapture(captureIndex, offset, sizeInBytes)
-print(memReadReturn)
+# print(memReadReturn)
 captureIndex = 1
 
 returnCode = Client_API.captureFrames(capSettings)
@@ -45,7 +45,7 @@ memCapReturn = Client_API.memGetCaptureSize()
 frameSize = memCapReturn[1]
 rows = memCapReturn[2]
 columns = memCapReturn[3]
-print(memCapReturn)
+# print(memCapReturn)
 
 chunks = (frameSize / MAX_CHUNK_SIZE) + 0.5
 offset = 0
@@ -61,30 +61,50 @@ for n in range(offset+1):
 locationEnum = EnumTypes.FLR_MEM_LOCATION_E.FLR_MEM_LENS_GAIN
 locationIdx = 1
 memFlashReturn = Client_API.memGetFlashSize(locationEnum)
-inputData = memFlashReturn[1]
-print(memFlashReturn)
-i = 0
-compare = i < inputData
-for compare in range(i + 2):
 
-    inputData[i] = 0x00
-    inputData[i + 1] = 0x20
+# print(memFlashReturn)
 
-chunks = (inputData / MAX_CHUNK_SIZE) + 0.5
-data = chunks
-idx = 0
-compareIdxChunks = idx < chunks
-for compareIdxChunks in range(idx+1):
-    idx = [MAX_CHUNK_SIZE]
+inputD = ''
+count = 0
+while count < memFlashReturn[1]:
+    inputD = inputD + '0x00,'
+    inputD = inputD + '0x20,'
+    count+=2
+    
+inputData = bytearray(inputD, 'utf-8')
+
+
+chunks = (memFlashReturn[1] / MAX_CHUNK_SIZE) + 0.5
+data = []
+datas = []
+for idx in range(int(chunks)):
+    
     if (frameSize - idx * MAX_CHUNK_SIZE) > MAX_CHUNK_SIZE:
         sizeInBytes = MAX_CHUNK_SIZE
     else:
         sizeInBytes = (frameSize - idx * MAX_CHUNK_SIZE)
-
-    idx2 = 0
-    compareIdx2SizeInBytes = idx2 <sizeInBytes
-    for compareIdx2SizeInBytes in range(idx2+1):
-        inputData(idx * MAX_CHUNK_SIZE + idx2)
+    datas.clear()
+    for idx2 in range(sizeInBytes):
+        datas.insert(idx2, inputData[(idx * MAX_CHUNK_SIZE + idx2)])
+    data.append(datas)
+        
+# print(data)
 
 memEraseFlashReturn = Client_API.memEraseFlash(locationEnum, locationIdx)
-print(memEraseFlashReturn)
+
+for chunkIdx in range(int(chunks+1)):
+    offset = (chunkIdx * MAX_CHUNK_SIZE)
+    if ((memFlashReturn[1] - offset) > MAX_CHUNK_SIZE):
+        sizeInBytes = MAX_CHUNK_SIZE
+    else:
+        sizeInBytes = (memFlashReturn[1] - offset)
+    memWriteFlashReturn = Client_API.memWriteFlash(locationEnum,locationIdx, offset, sizeInBytes, data[chunkIdx])
+
+    for chunk_idx in range(int(chunks+1)):
+        offset = (chunk_idx * MAX_CHUNK_SIZE)
+        if (memFlashReturn[1] - offset) > MAX_CHUNK_SIZE:
+            sizeInBytes = MAX_CHUNK_SIZE
+        else:
+            sizeInBytes = (memFlashReturn[1] - offset)
+        memReadFlashReturn = Client_API.memReadFlash(locationEnum, locationIdx, offset, sizeInBytes)
+    print(memReadFlashReturn)
