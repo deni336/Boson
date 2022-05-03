@@ -26,8 +26,6 @@ class MyApp(tk.Tk):
         menuBar = MenuBar(self)
         tk.Tk.config(self, menu=menuBar)
 
-        # videoThread = threading.Thread(target=CE.CameraStream.videoStream())
-        # videoThread.start()
 
     def showFrame(self, name):
         frame = self.frames[name]

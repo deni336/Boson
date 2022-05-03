@@ -1,6 +1,8 @@
 # from numpy import byte, uint16
 # import sys
-# from ClientFiles_Python import Client_API, ReturnCodes
+from ClientFiles_Python import Client_API, ReturnCodes
+returncode = Client_API.bprGetWorkBufIndex()
+print(returncode)
 
 # def startCam():
 #     cam = Client_API.Initialize("COM3")
@@ -25,8 +27,7 @@
 from ClientFiles_Python import Client_API
 from FSLP_Files.UART_HalfDuplex import PyUART
 
-from flirpy.camera.boson import Boson
-import serial
+
 
 # cam = PyUART()
 # port = cam.OpenPort("CameraSerialConfig.ini", "COM3", 921600)
