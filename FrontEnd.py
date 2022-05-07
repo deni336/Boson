@@ -1,14 +1,14 @@
+from ast import Index
 import threading, serial, io
-from numpy import frombuffer
-import PIL
+from cv2 import exp
+import numpy as np
+from numpy import frombuffer, number
 from ClientFiles_Python import Client_API, EnumTypes
 from ClientFiles_Python.ReturnCodes import FLR_RESULT
 from tkinter import *
 from tkinter import BitmapImage, ttk
-from PIL import *
+import PIL
 from PIL import ImageTk, Image
-from PIL.Image import *
-from PIL.Image import Image
 import cv2, re
 import GUI as G
 
@@ -20,14 +20,15 @@ class BosonFront(G.GUI):
 
         G.GUI.__init__(self, parent)
 
-        masterFrame = Frame(self.mainFrame, bg= "#4b4b4b")
-        masterFrame.grid()
+        topLabel = ttk.Label(self.mainFrame, text="Boson Viewer", font=["Arial", 24, "bold"], 
+                            background="#4b4b4b", foreground="blue")
+        topLabel.pack(side="top", anchor="n")
 
-        utilFrame = LabelFrame(masterFrame, G.frameStyles, text="Utilities")
-        utilFrame.grid(row=0, column=0, sticky="nw")
+        utilFrame = LabelFrame(self.mainFrame, G.frameStyles, text="Utilities")
+        utilFrame.pack(side='left', fill="y", expand=1, anchor="w")
 
         # Loop for creating buttons
-        btnGroup = ["snapShot", "startScreenRecord", "stopScreenRecord", "forceFFC"]
+        btnGroup = ["snapShot", "startScreenRecord", "stopScreenRecord", "forceFFC", "tankLevel", "delta", "rate"]
         rowPlus = 2
         for btn in btnGroup:
             btnCom = "CameraOperations." + btn + "()"
@@ -40,9 +41,20 @@ class BosonFront(G.GUI):
             btn = ttk.Button(utilFrame, text=btnText, command=lambda: btnCom).grid(row=rowPlus, column=0, pady=2)
 
         
-        videoThread = threading.Thread(target=CameraAcquisition.acquireCamera(self))
-        videoThread.start()
-        
+        # videoThread = threading.Thread(target=CameraAcquisition.acquireCamera(self))
+        # videoThread.start()
+    
+    def delta():
+        pass
+
+    def rate():
+        pass
+
+    def startScreenRecord():
+        pass
+
+    def stopScreenRecord():
+        pass
 
     def snapShot(*args):
         snapBool = False
@@ -51,13 +63,17 @@ class BosonFront(G.GUI):
         elif args == False:
             snapBool = False
         return snapBool
+    
+    def forceFFC():
+        pass
 
 
 class CameraAcquisition(G.GUI):
     def __init__(self, parent) -> None:
-        cameraFrame = Frame(self.mainFrame, bg= "#4b4b4b").grid(row=0, column=1)
+        pass
         
     def acquireCamera(self):
+        cameraFrame = Frame(self.mainFrame, bg= "#4b4b4b").pack()
         MAX_CHUNK_SIZE = 256
 
         cam = Client_API.Initialize("COM3")
@@ -76,6 +92,8 @@ class CameraAcquisition(G.GUI):
 
             chunks = (memCapReturn[1]/MAX_CHUNK_SIZE)+0.5
             rawLst = []
+            rawLst1 = []
+            rawLstF = []
             offset = 0
             for offset in range(0, int(chunks)):
                 if offset < memCapReturn[1]:
@@ -87,10 +105,27 @@ class CameraAcquisition(G.GUI):
 
                 memReadReturn = Client_API.memReadCapture(captureIndex, offset, sizeInBytes)
                 
-                
-            tkPhotoImage = ImageTk.PhotoImage(tkImage)
-            displayBmap = BitmapImage(data=rawLst)
-            cameraLabel = Label(self.cameraFrame,image=displayBmap).pack()
+                rawLst.append(memReadReturn[1])
+            thermLst = []
+            for i in rawLst:
+                for o in i:
+                    if i.index(o) % 2:
+                        thermLst.append(o)
+                    elif len(rawLst1) != 640:
+                        rawLst1.append(o)
+                    elif len(rawLst1) == 640:
+                        rawLstF.append(rawLst1)
+                        rawLst1.clear()
+                        rawLst1.append(o)
+                    else:
+                        rawLstF.append(rawLst1)
+                        rawLst1.clear()
+            #print(rawLstF)
+            array = np.asarray(rawLst, dtype=np.uint8)
+            newImage = Image.fromarray(array)
+            
+            displayBmap = BitmapImage(data=newImage)
+            cameraLabel = Label(cameraFrame,image=displayBmap).pack()
 
             # captureIndex = 1
 

@@ -10,7 +10,7 @@ class MyApp(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
         mainFrame = tk.Frame(self, bg="#4b4b4b")
         #mainFrame.pack_propagate(0)
-        mainFrame.grid(sticky="nesw")
+        mainFrame.pack(expand=True, fill="both")
         mainFrame.grid_rowconfigure(0, weight=1)
         mainFrame.grid_columnconfigure(0, weight=1)
         #self.geometry('1920x1080+0+0')
